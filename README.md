@@ -1,5 +1,7 @@
 # Advanced testing for Rust applications
 
+NOTE: This repository contains my personal solutions for the Advanced Testing of Rust by [Mainmatter](https://mainmatter.com/rust-consulting/)
+
 No application is an island: you need to interact with third-party APIs, databases and who knows what else.
 Testing those interactions is tricky, to say the least! This workshop will focus on expanding your Rust testing toolkit,
 going beyond the basic techniques you're already familiar with.
