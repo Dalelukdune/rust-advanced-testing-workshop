@@ -22,7 +22,7 @@ mod tests {
             }
         });
         assert_json_snapshot!(api_response, {
-            "created_at" => created_at
+            ".created_at" => "[timestamp]"
         })
     }
 }
