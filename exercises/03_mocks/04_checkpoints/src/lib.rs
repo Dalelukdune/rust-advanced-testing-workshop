@@ -55,13 +55,7 @@ mod tests {
         let entity_id: usize = 1;
         let caller_id: usize = 1;
         let mut mock_client = MockAuthClient::new();
-        mock_client
-            .expect_get_permissions()
-            .withf(move |id| *id == caller_id)
-            .return_const(Permissions::Read {
-                ids: Default::default(),
-            });
-        let repository = Repository::new(&mock_client, caller_id);
+        let repository = setup_repository(&mut mock_client, caller_id);
 
         mock_client
             .expect_get_permissions()
@@ -72,5 +66,20 @@ mod tests {
 
         // Act
         repository.get(&mock_client, caller_id, entity_id);
+    }
+
+    fn setup_repository(mock: &mut MockAuthClient, caller_id: usize) -> Repository {
+        mock
+            .expect_get_permissions()
+            .withf(move |id| *id == caller_id)
+            .return_const(Permissions::Read {
+                ids: Default::default(),
+            });
+
+        let repository = Repository::new(mock, caller_id);
+
+        mock.checkpoint();
+
+        repository
     }
 }
