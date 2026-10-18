@@ -26,15 +26,15 @@ mod tests {
     // Tip: you can use `expected` to specify a value that must be **contained** in the panic message!
     #[should_panic(expected = "Failed to open config file")]
     fn panics_if_file_does_not_exist() {
-        let config_file = todo!();
-        let config_path = todo!();
+        let config_file = NamedTempFile::new();
+        let config_path = config_file.unwrap().path().to_path_buf();
         super::get_cli_path(&config_path);
     }
 
     #[googletest::gtest]
     #[should_panic(expected = "The config file is empty")]
     fn panics_if_file_is_empty() {
-        let config_file = todo!();
+        let config_file = NamedTempFile::new().unwrap();
         super::get_cli_path(config_file.path());
     }
 
@@ -42,8 +42,8 @@ mod tests {
     #[should_panic(expected = "First line is not valid UTF-8")]
     fn panics_if_file_contains_invalid_utf8() {
         let invalid_utf8 = [0xFF];
-        let mut config_file = todo!();
-        todo!();
+        let mut config_file = NamedTempFile::new().unwrap();
+        config_file.write_all(&invalid_utf8).unwrap();
         super::get_cli_path(config_file.path());
     }
 
@@ -51,8 +51,8 @@ mod tests {
     fn happy_path() {
         let cli_path = PathBuf::from("my_cli");
 
-        let mut config_file = todo!();
-        todo!();
+        let mut config_file = NamedTempFile::new().unwrap();
+        writeln!(config_file, "my_cli").unwrap();
 
         let actual = super::get_cli_path(config_file.path());
         assert_that!(&actual, eq(&cli_path));
