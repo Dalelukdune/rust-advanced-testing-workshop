@@ -5,12 +5,16 @@
 //! - The request body is a valid JSON object
 //! - The `Content-Length` header is set and its value matches the length of the request body (in bytes)
 use wiremock::{Match, Request};
+use wiremock::matchers::{body_json_schema, header, method};
 
 struct WellFormedJson;
 
 impl Match for WellFormedJson {
     fn matches(&self, request: &Request) -> bool {
-        todo!("Implement me!")
+        method("POST").matches(request)
+            && header("Content-Type", "application/json").matches(request)
+            && body_json_schema::<serde_json::Value>(request)
+            && header("Content-Length", request.body.len()).matches(request)
     }
 }
 
